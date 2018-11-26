@@ -1,0 +1,80 @@
+#!/usr/bin/env node
+var lt_client = require('../client');
+var open_url = require('openurl');
+
+var argv = require('yargs')
+    .usage('Usage: $0 --port [num] -s [str] -x [str]<options>')
+    .env(true)
+    .option('s', {
+        alias: 'subdomain',
+        describe: 'Request this subdomain'
+    })
+    .option('x', {
+        alias: 'secret',
+        describe: 'The secret word for establish a connection'
+    })
+    .option('p', {
+        alias: 'port',
+        describe: 'Internal http server port',
+    })
+    .require('subdomain')
+    .require('secret')
+    .require('port')
+    .boolean('print-requests')
+    .help('help', 'Show this help and exit')
+    .version(require('../package').version)
+    .argv;
+
+if (typeof argv.port !== 'number') {
+    require('yargs').showHelp();
+    console.error('port must be a number');
+    process.exit(1);
+}
+
+var opt = {
+    host: 'https://tunnel.aplestro.com',
+    port: argv.port,
+    local_host: argv['local-host'],
+    subdomain: argv.subdomain,
+    secret: argv.secret,
+};
+
+const PrintRequests = argv['print-requests'];
+
+const openCallback = function(err, tunnel) {
+    let forTryConnect = true;
+
+    if (err) {
+        throw err;
+    }
+
+    console.log('your url is: %s', tunnel.url);
+
+    if (argv.open) {
+        open_url.open(tunnel.url);
+    }
+
+    tunnel.on('error', function(err) {
+        // retrying connection to local server
+        //throw err;
+
+        if (forTryConnect){
+            forTryConnect = false;
+            setTimeout(()=>{
+                forTryConnect = true;
+                console.log('try to open', Math.random())
+                lt_client(opt.port, opt, openCallback);
+            },2000)
+        }
+    });
+
+    if (PrintRequests) {
+        tunnel.on('request', function(info) {
+            console.log(new Date().toString(), info.method, info.path);
+        });
+    }
+}
+
+lt_client(opt.port, opt, openCallback);
+
+// vim: ft=javascript

@@ -1,0 +1,17 @@
+{
+  "author": "Peter Nikolaev <peter.a.nikolaev@gmail.com>",
+  "name": "AplestroTunnel",
+  "description": "expose localhost to the Aplestro",
+  "version": "0.8.0",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "0.17.1",
+    "debug": "2.6.8",
+    "openurl": "1.1.1",
+    "yargs": "6.6.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.0"
+  },
+  "main": "./client.js"
+}
