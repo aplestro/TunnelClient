@@ -20,7 +20,7 @@ Assuming your local server is running on port 3333.
 node bin/client -p 3333 -s 123example_YourAppId -x 321example_TunnelKey
 ```
 
-Thats it! It will connect to the tunnel server, setup the tunnel, and tell you what url to use for your app. 
+It will connect to the tunnel server, setup the tunnel, and tell you what url to use for your app. 
 Your url will be https://YourAppId.tunnel.aplestro.com. This url is saved for your application forever.
 You a ready to work in Aplestro.
 
